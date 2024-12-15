@@ -3,19 +3,83 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 249, 250, 251;
+  --background-end-rgb: 243, 244, 246;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-md 
+    hover:bg-blue-700 focus:outline-none focus:ring-2 
+    focus:ring-blue-500 focus:ring-offset-2
+    transition-colors duration-200 ease-in-out;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 text-gray-800 rounded-md 
+    hover:bg-gray-300 focus:outline-none focus:ring-2 
+    focus:ring-gray-500 focus:ring-offset-2
+    transition-colors duration-200 ease-in-out;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 bg-white border border-gray-300 rounded-md 
+    focus:outline-none focus:ring-2 focus:ring-blue-500 
+    focus:border-blue-500 transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .scrollbar-custom {
+    @apply scrollbar-thin scrollbar-thumb-gray-300 
+    scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400;
+  }
+}
+
+/* Add these to your existing styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 60;
+}
+
+/* For nested modals */
+.modal-nested {
+  z-index: 70;
+}
+
+/* Add to your existing styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 60;
+}
+
+.modal-nested {
+  position: relative;
+  z-index: 70;
+}
+
+/* Prevent scrolling when modal is open */
+.modal-open {
+  overflow: hidden;
 }
