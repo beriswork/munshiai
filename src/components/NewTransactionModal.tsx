@@ -91,18 +91,20 @@ function AudioVisualizer({ audioUrl, duration }: AudioVisualizerProps) {
   )
 }
 
+const initialFormState = {
+  type: 'credit' as TransactionType,
+  amount: '',
+  depositAmount: '',
+  creditAmount: '',
+  details: ''
+}
+
 export default function NewTransactionModal({ isOpen, onClose }: NewTransactionModalProps) {
   const { customers, addTransaction } = useCustomers()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [showNewCustomerModal, setShowNewCustomerModal] = useState(false)
-  const [formData, setFormData] = useState({
-    type: 'credit' as TransactionType,
-    amount: '',
-    depositAmount: '',
-    creditAmount: '',
-    details: ''
-  })
+  const [formData, setFormData] = useState(initialFormState)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -110,6 +112,18 @@ export default function NewTransactionModal({ isOpen, onClose }: NewTransactionM
   const [isRecording, setIsRecording] = useState(false)
   const audioRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
+
+  useEffect(() => {
+    if (!isOpen) {
+      console.log('🔄 Resetting transaction modal state')
+      setSearchTerm('')
+      setSelectedCustomer(null)
+      setFormData(initialFormState)
+      setShowDropdown(false)
+      setShowNewCustomerModal(false)
+      setAttachment(null)
+    }
+  }, [isOpen])
 
   const filteredCustomers = searchTerm
     ? customers.filter(customer =>
@@ -165,23 +179,17 @@ export default function NewTransactionModal({ isOpen, onClose }: NewTransactionM
   const handleNewCustomerClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('A. Opening New Customer Modal from Transaction Modal')
+    console.log('🔄 Opening new customer modal from search')
     setShowNewCustomerModal(true)
+    setShowDropdown(false) // Hide dropdown when opening new customer modal
   }
 
   const handleNewCustomerCreated = (customer: Customer) => {
-    console.log('B. Customer Created Callback Received in Transaction Modal:', customer)
-    
-    console.log('C. Updating Selected Customer:', customer)
+    console.log('✅ New customer created from transaction modal:', customer)
     setSelectedCustomer(customer)
-    
-    console.log('D. Updating Search Term:', customer.name)
     setSearchTerm(customer.name)
-    
-    console.log('E. Closing New Customer Modal')
     setShowNewCustomerModal(false)
-    
-    console.log('F. Current Customers List:', customers)
+    setShowDropdown(false)
   }
 
   const handleCustomerSelect = (customer: Customer) => {
@@ -544,12 +552,12 @@ export default function NewTransactionModal({ isOpen, onClose }: NewTransactionM
             <NewCustomerModal
               isOpen={showNewCustomerModal}
               onClose={() => {
-                console.log('G. New Customer Modal Close Triggered')
+                console.log('🔄 Closing new customer modal')
                 setShowNewCustomerModal(false)
               }}
               prefillName={searchTerm}
               onCustomerCreated={(newCustomer) => {
-                console.log('H. Customer Created Callback Executing with:', newCustomer)
+                console.log('✅ New customer created from transaction modal:', newCustomer)
                 handleNewCustomerCreated(newCustomer)
               }}
             />

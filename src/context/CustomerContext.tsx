@@ -56,9 +56,12 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const loadCustomers = async () => {
+      console.log('🔄 CustomerContext: Loading customers from database...')
       try {
         const response = await fetch('/api/customers')
         const data = await response.json()
+        console.log(`✅ CustomerContext: Successfully loaded ${data.length} customers`)
+        
         setCustomers(data.map((customer: any) => ({
           ...customer,
           createdAt: new Date(customer.createdAt),
@@ -68,7 +71,7 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
           }))
         })))
       } catch (error) {
-        console.error('Error loading customers:', error)
+        console.error('❌ CustomerContext: Error loading customers:', error)
       } finally {
         setIsLoading(false)
       }
@@ -190,6 +193,7 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
     customerId: string, 
     transactionData: Omit<Transaction, 'id' | 'balanceAfter'>
   ) => {
+    console.log('🔄 CustomerContext: Adding new transaction...')
     try {
       const newTransaction = {
         ...transactionData,
@@ -228,9 +232,11 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
         type: 'success' 
       })
 
+      console.log('✅ CustomerContext: Transaction added successfully')
+
       return data
     } catch (error) {
-      console.error('Error adding transaction:', error)
+      console.error('❌ CustomerContext: Error adding transaction:', error)
       setToast({ 
         message: error instanceof Error ? error.message : 'Failed to add transaction',
         type: 'error' 
